@@ -1,0 +1,102 @@
+:root {
+  --bv-accent: #2f5fff;
+  --bv-bg: #fafafa;
+  --bv-text: #1a1a1a;
+  --bv-border: #e5e5e5;
+}
+
+body {
+  background-color: var(--bv-bg);
+  color: var(--bv-text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+.bv-navbar {
+  border-bottom: 1px solid var(--bv-border);
+  background: #fff;
+}
+
+.bv-logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--bv-text) !important;
+}
+
+.bv-hero {
+  padding: 4rem 1rem 3rem;
+  text-align: center;
+}
+
+.bv-hero h1 {
+  font-weight: 800;
+  font-size: 2.6rem;
+}
+
+.bv-hero p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.bv-card {
+  border: 1px solid var(--bv-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  height: 100%;
+  background: #fff;
+}
+
+.bv-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.bv-card img.cover {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.bv-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.bv-content img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.bv-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ddd;
+}
+
+.bv-avatar-lg {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ddd;
+}
+
+footer.bv-footer {
+  border-top: 1px solid var(--bv-border);
+  padding: 2rem 0;
+  color: #888;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+.category-pill {
+  border-radius: 999px !important;
+}
