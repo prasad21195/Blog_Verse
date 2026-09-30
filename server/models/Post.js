@@ -58,7 +58,12 @@ viewedBy: {
 
 postSchema.index({ slug: 1 }, { unique: true });
 postSchema.index({ createdAt: -1 });
-postSchema.index({ category: 1 });
+postSchema.index({ category: 1,tags: {
+  type: [String],
+  default: [],
+  set: (tags) => tags.map((t) => String(t).toLowerCase().trim()).filter(Boolean).slice(0, 8),
+}, });
+postSchema.index({ tags: 1 });
 postSchema.index({ title: 'text', excerpt: 'text' });
 
 postSchema.virtual('likesCount').get(function () {

@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendOtpEmail = async (toEmail, otp) => {
-  await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: `"BlogVerse" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: 'Your BlogVerse verification code',
@@ -29,6 +29,7 @@ const sendOtpEmail = async (toEmail, otp) => {
       </div>
     `,
   });
+    console.log('OTP email sent:', { messageId: info.messageId, accepted: info.accepted, rejected: info.rejected });
 };
 
 const sendPasswordResetOtpEmail = async (toEmail, otp) => {

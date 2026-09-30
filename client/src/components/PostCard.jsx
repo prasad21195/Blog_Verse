@@ -35,6 +35,15 @@ const PostCard = ({ post }) => {
             <span><i className="bi bi-heart-fill text-danger me-1"></i>{post.likes?.length || 0}</span>
             <span><i className="bi bi-eye-fill me-1"></i>{post.views || 0}</span>
           </div>
+          {post.tags?.length > 0 && (
+  <div className="d-flex flex-wrap gap-1 mt-2">
+    {post.tags.slice(0, 3).map((tag) => (
+      <span key={tag} className="badge bg-light text-muted border" style={{ fontWeight: 400, fontSize: '0.7rem' }}>
+        #{tag}
+      </span>
+    ))}
+  </div>
+)}
         </div>
       </div>
     </Link>

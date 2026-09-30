@@ -84,8 +84,7 @@ const createPost = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, message: errors.array()[0].msg });
     }
-
-    const { title, category, content, excerpt, coverImage } = req.body;
+const { title, category, content, excerpt, coverImage, tags } = req.body;
 
     const cleanContent = sanitize(content);
 
@@ -102,6 +101,7 @@ const createPost = async (req, res, next) => {
       category,
       coverImage: coverImage || '',
       author: req.user._id, // NEVER trust an author id from the frontend
+      tags: Array.isArray(tags) ? tags : []
     });
 
     const populated = await post.populate('author', 'name avatar');
@@ -127,13 +127,13 @@ const updatePost = async (req, res, next) => {
     if (post.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: 'You are not authorized to edit this post' });
     }
-
-    const { title, category, content, excerpt, coverImage } = req.body;
+const { title, category, content, excerpt, coverImage, tags } = req.body;
 
     if (title) post.title = title;
     if (category) post.category = category;
     if (content) post.content = sanitize(content);
     if (coverImage) post.coverImage = coverImage;
+    if (Array.isArray(tags)) post.tags = tags;
 
     if (excerpt && excerpt.trim()) {
       post.excerpt = excerpt.trim();
