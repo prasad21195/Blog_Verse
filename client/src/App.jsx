@@ -16,6 +16,8 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 
 import ForgotPassword from './pages/ForgotPassword';  
+import Admin from './pages/Admin';
+import AdminRoute from './components/AdminRoute';
 
 
 function App() {
@@ -40,6 +42,7 @@ function App() {
           <Route path="/login" element={<Login />} />
 <Route path="/forgot-password" element={<ForgotPassword />} />
 <Route path="/register" element={<Register />} />
+<Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
 <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

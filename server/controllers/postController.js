@@ -13,8 +13,6 @@ const getPosts = async (req, res, next) => {
     const query = {};
 
     if (search) {
-      // Search across title, excerpt and category -- done in MongoDB, not
-      // by fetching everything and filtering in React.
       const regex = new RegExp(search, 'i');
       query.$or = [{ title: regex }, { excerpt: regex }, { category: regex }];
     }
@@ -61,15 +59,14 @@ const getPostBySlug = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
-    
     const viewerId = req.user ? req.user._id.toString() : req.ip;
-const isAuthorViewing = req.user && post.author._id.toString() === req.user._id.toString();
+    const isAuthorViewing = req.user && post.author._id.toString() === req.user._id.toString();
 
-if (!isAuthorViewing && !post.viewedBy.includes(viewerId)) {
-  post.views += 1;
-  post.viewedBy.push(viewerId);
-  await post.save();
-}
+    if (!isAuthorViewing && !post.viewedBy.includes(viewerId)) {
+      post.views += 1;
+      post.viewedBy.push(viewerId);
+      await post.save();
+    }
 
     res.status(200).json({ success: true, message: 'Post fetched successfully', data: post });
   } catch (err) {
@@ -84,7 +81,8 @@ const createPost = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, message: errors.array()[0].msg });
     }
-const { title, category, content, excerpt, coverImage, tags } = req.body;
+
+    const { title, category, content, excerpt, coverImage, tags } = req.body;
 
     const cleanContent = sanitize(content);
 
@@ -99,9 +97,9 @@ const { title, category, content, excerpt, coverImage, tags } = req.body;
       content: cleanContent,
       excerpt: finalExcerpt,
       category,
+      tags: Array.isArray(tags) ? tags : [],
       coverImage: coverImage || '',
       author: req.user._id, // NEVER trust an author id from the frontend
-      tags: Array.isArray(tags) ? tags : []
     });
 
     const populated = await post.populate('author', 'name avatar');
@@ -127,7 +125,8 @@ const updatePost = async (req, res, next) => {
     if (post.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: 'You are not authorized to edit this post' });
     }
-const { title, category, content, excerpt, coverImage, tags } = req.body;
+
+    const { title, category, content, excerpt, coverImage, tags } = req.body;
 
     if (title) post.title = title;
     if (category) post.category = category;
@@ -150,7 +149,7 @@ const { title, category, content, excerpt, coverImage, tags } = req.body;
   }
 };
 
-// DELETE /api/posts/:id (protected, owner only)
+// DELETE /api/posts/:id (protected, owner or admin)
 const deletePost = async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -162,7 +161,10 @@ const deletePost = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
-    if (post.author.toString() !== req.user._id.toString()) {
+    const isOwner = post.author.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({ success: false, message: 'You are not authorized to delete this post' });
     }
 

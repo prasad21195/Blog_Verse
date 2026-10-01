@@ -49,6 +49,9 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/ai', aiRoutes);
+const adminRoutes = require('./routes/adminRoutes');
+// ...
+app.use('/api/admin', adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

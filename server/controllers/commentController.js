@@ -53,7 +53,7 @@ const addComment = async (req, res, next) => {
   }
 };
 
-// DELETE /api/comments/:id (protected, owner only)
+// DELETE /api/comments/:id (protected, owner or admin)
 const deleteComment = async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -65,7 +65,10 @@ const deleteComment = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Comment not found' });
     }
 
-    if (comment.user.toString() !== req.user._id.toString()) {
+    const isOwner = comment.user.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({ success: false, message: 'You are not authorized to delete this comment' });
     }
 
