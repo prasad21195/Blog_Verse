@@ -45,6 +45,4 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-userSchema.index({ email: 1 }, { unique: true });
-
 module.exports = mongoose.model('User', userSchema);

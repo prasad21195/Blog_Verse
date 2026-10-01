@@ -52,6 +52,7 @@ app.use('/api/ai', aiRoutes);
 const adminRoutes = require('./routes/adminRoutes');
 // ...
 app.use('/api/admin', adminRoutes);
+app.set('trust proxy', 1);
 
 app.use(notFound);
 app.use(errorHandler);
