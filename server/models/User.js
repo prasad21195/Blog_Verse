@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: 60,
     },
+
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -16,26 +17,28 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
     },
+
     password: {
       type: String,
       required: [true, 'Password is required'],
       minlength: 6,
-      select: false, // never returned by default
+      select: false,
     },
+
     avatar: {
       type: String,
       default: '',
     },
+
     role: {
-  type: String,
-  enum: ['user', 'admin'],
-  default: 'user',
-},
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
   },
   { timestamps: true }
 );
 
-// Extra safety: strip password even if select('+password') was used upstream and toJSON is called
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

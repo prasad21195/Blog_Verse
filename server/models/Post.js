@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 
-const CATEGORIES = ['Tech', 'Travel', 'Food', 'Lifestyle', 'Coding', 'General'];
+const CATEGORIES = [
+  'Tech',
+  'Travel',
+  'Food',
+  'Lifestyle',
+  'Coding',
+  'General',
+];
 
 const postSchema = new mongoose.Schema(
   {
@@ -10,66 +17,82 @@ const postSchema = new mongoose.Schema(
       trim: true,
       maxlength: 150,
     },
+
     slug: {
       type: String,
       unique: true,
     },
+
     content: {
       type: String,
       required: [true, 'Content is required'],
     },
+
     excerpt: {
       type: String,
       maxlength: 200,
     },
+
     coverImage: {
       type: String,
       default: '',
     },
+
     category: {
       type: String,
       enum: CATEGORIES,
       default: 'General',
     },
+
+    tags: {
+      type: [String],
+      default: [],
+      set: (tags) =>
+        tags
+          .map((t) => String(t).toLowerCase().trim())
+          .filter(Boolean)
+          .slice(0, 8),
+    },
+
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
+
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
+
     views: {
       type: Number,
       default: 0,
     },
 
-
-viewedBy: {
-  type: [String],
-  default: [],
-},
+    viewedBy: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );
 
+// Indexes
 postSchema.index({ slug: 1 }, { unique: true });
 postSchema.index({ createdAt: -1 });
-postSchema.index({ category: 1,tags: {
-  type: [String],
-  default: [],
-  set: (tags) => tags.map((t) => String(t).toLowerCase().trim()).filter(Boolean).slice(0, 8),
-}, });
+postSchema.index({ category: 1 });
 postSchema.index({ tags: 1 });
 postSchema.index({ title: 'text', excerpt: 'text' });
 
+// Virtual
 postSchema.virtual('likesCount').get(function () {
   return this.likes ? this.likes.length : 0;
 });
 
+// JSON transformation
 postSchema.set('toJSON', {
   virtuals: true,
   transform: (doc, ret) => {
